@@ -18,5 +18,5 @@ name = ARGV[0]
 date = Time.now.strftime("%Y-%m-%d")
 
 exec("mkdir -p results/#{date}")
-exec("sbt clean 'jmh:run -o ../results/#{date}/#{name}.txt  -i 10 -wi 10 -f 2 -t 1 streaming.benchmarks.#{name}'")
+exec("sbt clean 'jmh:run -o ./results/#{date}/#{name}.txt  -i 10 -wi 10 -f 2 -t 1 streaming.benchmarks.#{name}'")
 
