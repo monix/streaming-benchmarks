@@ -32,3 +32,6 @@ Iterant[Task]
   // 6: foldLeft
   .foldLeftL(0L)(_ + _)
 ```
+
+
+
