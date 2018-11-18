@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+Dir.chdir(File.dirname(__FILE__))
+
+Dir.entries("src/main/scala/streaming/benchmarks").each do |f|
+  if f =~ /^([^.]+)\.scala$/
+    name = $1
+    system("./run-benchmark #{name}") if name !~ /package/
+  end
+end
