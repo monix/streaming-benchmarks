@@ -36,13 +36,13 @@ import scala.concurrent.duration._
   *
   * To run the benchmarks and record results:
   *
-  *     ./run-benchmark ChunkedFilterMapSumBenchmark
+  *     ./run-benchmark ChunkedEvalFilterMapSumBenchmark
   *
   * This will generate results in `./results`.
   *
   * Or to run the benchmark from within SBT:
   *
-  *     jmh:run -i 10 -wi 10 -f 2 -t 1 streaming.benchmarks.ChunkedFilterMapSumBenchmark
+  *     jmh:run -i 10 -wi 10 -f 2 -t 1 streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark
   *
   * Which means "10 iterations", "10 warm-up iterations", "2 forks", "1 thread".
   * Please note that benchmarks should be usually executed at least in
@@ -51,7 +51,7 @@ import scala.concurrent.duration._
 @State(Scope.Thread)
 @BenchmarkMode(Array(Mode.Throughput))
 @OutputTimeUnit(TimeUnit.SECONDS)
-class ChunkedFilterMapSumBenchmark {
+class ChunkedEvalFilterMapSumBenchmark {
   @Param(Array("1000"))
   var chunkCount: Int = _
 

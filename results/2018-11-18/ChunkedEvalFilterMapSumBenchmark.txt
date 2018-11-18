@@ -1,0 +1,267 @@
+# JMH version: 1.21
+# VM version: JDK 1.8.0_161, Java HotSpot(TM) 64-Bit Server VM, 25.161-b12
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_161.jdk/Contents/Home/jre/bin/java
+# VM options: <none>
+# Warmup: 10 iterations, 10 s each
+# Measurement: 10 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.akkaStreams
+# Parameters: (chunkCount = 1000, chunkSize = 1000)
+
+# Run progress: 0.00% complete, ETA 00:20:00
+# Fork: 1 of 1
+# Warmup Iteration   1: 14.816 ops/s
+# Warmup Iteration   2: 15.922 ops/s
+# Warmup Iteration   3: 15.974 ops/s
+# Warmup Iteration   4: 16.026 ops/s
+# Warmup Iteration   5: 16.223 ops/s
+# Warmup Iteration   6: 16.252 ops/s
+# Warmup Iteration   7: 16.271 ops/s
+# Warmup Iteration   8: 16.310 ops/s
+# Warmup Iteration   9: 16.355 ops/s
+# Warmup Iteration  10: 16.220 ops/s
+Iteration   1: 16.136 ops/s
+Iteration   2: 16.323 ops/s
+Iteration   3: 16.338 ops/s
+Iteration   4: 16.187 ops/s
+Iteration   5: 16.225 ops/s
+Iteration   6: 16.195 ops/s
+Iteration   7: 16.215 ops/s
+Iteration   8: 16.321 ops/s
+Iteration   9: 16.344 ops/s
+Iteration  10: 16.206 ops/s
+
+
+Result "streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.akkaStreams":
+  16.249 ±(99.9%) 0.114 ops/s [Average]
+  (min, avg, max) = (16.136, 16.249, 16.344), stdev = 0.075
+  CI (99.9%): [16.135, 16.362] (assumes normal distribution)
+
+
+# JMH version: 1.21
+# VM version: JDK 1.8.0_161, Java HotSpot(TM) 64-Bit Server VM, 25.161-b12
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_161.jdk/Contents/Home/jre/bin/java
+# VM options: <none>
+# Warmup: 10 iterations, 10 s each
+# Measurement: 10 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.fs2Stream
+# Parameters: (chunkCount = 1000, chunkSize = 1000)
+
+# Run progress: 16.67% complete, ETA 00:16:50
+# Fork: 1 of 1
+# Warmup Iteration   1: 39.674 ops/s
+# Warmup Iteration   2: 42.504 ops/s
+# Warmup Iteration   3: 42.865 ops/s
+# Warmup Iteration   4: 43.049 ops/s
+# Warmup Iteration   5: 43.063 ops/s
+# Warmup Iteration   6: 43.206 ops/s
+# Warmup Iteration   7: 42.895 ops/s
+# Warmup Iteration   8: 42.978 ops/s
+# Warmup Iteration   9: 43.141 ops/s
+# Warmup Iteration  10: 43.179 ops/s
+Iteration   1: 43.074 ops/s
+Iteration   2: 43.170 ops/s
+Iteration   3: 42.983 ops/s
+Iteration   4: 42.843 ops/s
+Iteration   5: 43.096 ops/s
+Iteration   6: 42.993 ops/s
+Iteration   7: 43.124 ops/s
+Iteration   8: 43.775 ops/s
+Iteration   9: 45.884 ops/s
+Iteration  10: 42.982 ops/s
+
+
+Result "streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.fs2Stream":
+  43.392 ±(99.9%) 1.377 ops/s [Average]
+  (min, avg, max) = (42.843, 43.392, 45.884), stdev = 0.911
+  CI (99.9%): [42.016, 44.769] (assumes normal distribution)
+
+
+# JMH version: 1.21
+# VM version: JDK 1.8.0_161, Java HotSpot(TM) 64-Bit Server VM, 25.161-b12
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_161.jdk/Contents/Home/jre/bin/java
+# VM options: <none>
+# Warmup: 10 iterations, 10 s each
+# Measurement: 10 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.monixIterant
+# Parameters: (chunkCount = 1000, chunkSize = 1000)
+
+# Run progress: 33.33% complete, ETA 00:13:27
+# Fork: 1 of 1
+# Warmup Iteration   1: 105.933 ops/s
+# Warmup Iteration   2: 107.552 ops/s
+# Warmup Iteration   3: 109.055 ops/s
+# Warmup Iteration   4: 107.507 ops/s
+# Warmup Iteration   5: 110.441 ops/s
+# Warmup Iteration   6: 111.071 ops/s
+# Warmup Iteration   7: 107.381 ops/s
+# Warmup Iteration   8: 106.778 ops/s
+# Warmup Iteration   9: 106.333 ops/s
+# Warmup Iteration  10: 105.663 ops/s
+Iteration   1: 105.287 ops/s
+Iteration   2: 104.270 ops/s
+Iteration   3: 104.347 ops/s
+Iteration   4: 107.335 ops/s
+Iteration   5: 108.774 ops/s
+Iteration   6: 107.059 ops/s
+Iteration   7: 103.974 ops/s
+Iteration   8: 107.909 ops/s
+Iteration   9: 106.086 ops/s
+Iteration  10: 107.777 ops/s
+
+
+Result "streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.monixIterant":
+  106.282 ±(99.9%) 2.616 ops/s [Average]
+  (min, avg, max) = (103.974, 106.282, 108.774), stdev = 1.731
+  CI (99.9%): [103.665, 108.898] (assumes normal distribution)
+
+
+# JMH version: 1.21
+# VM version: JDK 1.8.0_161, Java HotSpot(TM) 64-Bit Server VM, 25.161-b12
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_161.jdk/Contents/Home/jre/bin/java
+# VM options: <none>
+# Warmup: 10 iterations, 10 s each
+# Measurement: 10 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.monixObservable
+# Parameters: (chunkCount = 1000, chunkSize = 1000)
+
+# Run progress: 50.00% complete, ETA 00:10:05
+# Fork: 1 of 1
+# Warmup Iteration   1: 83.502 ops/s
+# Warmup Iteration   2: 86.469 ops/s
+# Warmup Iteration   3: 86.330 ops/s
+# Warmup Iteration   4: 85.464 ops/s
+# Warmup Iteration   5: 86.929 ops/s
+# Warmup Iteration   6: 87.189 ops/s
+# Warmup Iteration   7: 87.061 ops/s
+# Warmup Iteration   8: 86.102 ops/s
+# Warmup Iteration   9: 87.364 ops/s
+# Warmup Iteration  10: 85.416 ops/s
+Iteration   1: 88.477 ops/s
+Iteration   2: 103.288 ops/s
+Iteration   3: 97.480 ops/s
+Iteration   4: 86.185 ops/s
+Iteration   5: 85.695 ops/s
+Iteration   6: 87.266 ops/s
+Iteration   7: 86.769 ops/s
+Iteration   8: 86.524 ops/s
+Iteration   9: 85.906 ops/s
+Iteration  10: 86.757 ops/s
+
+
+Result "streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.monixObservable":
+  89.435 ±(99.9%) 9.043 ops/s [Average]
+  (min, avg, max) = (85.695, 89.435, 103.288), stdev = 5.982
+  CI (99.9%): [80.391, 98.478] (assumes normal distribution)
+
+
+# JMH version: 1.21
+# VM version: JDK 1.8.0_161, Java HotSpot(TM) 64-Bit Server VM, 25.161-b12
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_161.jdk/Contents/Home/jre/bin/java
+# VM options: <none>
+# Warmup: 10 iterations, 10 s each
+# Measurement: 10 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.rxJavaFlowable
+# Parameters: (chunkCount = 1000, chunkSize = 1000)
+
+# Run progress: 66.67% complete, ETA 00:06:43
+# Fork: 1 of 1
+# Warmup Iteration   1: 53.065 ops/s
+# Warmup Iteration   2: 58.014 ops/s
+# Warmup Iteration   3: 57.440 ops/s
+# Warmup Iteration   4: 57.336 ops/s
+# Warmup Iteration   5: 56.676 ops/s
+# Warmup Iteration   6: 56.938 ops/s
+# Warmup Iteration   7: 57.068 ops/s
+# Warmup Iteration   8: 56.919 ops/s
+# Warmup Iteration   9: 56.703 ops/s
+# Warmup Iteration  10: 56.771 ops/s
+Iteration   1: 56.844 ops/s
+Iteration   2: 57.194 ops/s
+Iteration   3: 57.045 ops/s
+Iteration   4: 56.671 ops/s
+Iteration   5: 57.208 ops/s
+Iteration   6: 57.177 ops/s
+Iteration   7: 56.610 ops/s
+Iteration   8: 57.502 ops/s
+Iteration   9: 60.521 ops/s
+Iteration  10: 56.756 ops/s
+
+
+Result "streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.rxJavaFlowable":
+  57.353 ±(99.9%) 1.736 ops/s [Average]
+  (min, avg, max) = (56.610, 57.353, 60.521), stdev = 1.148
+  CI (99.9%): [55.617, 59.089] (assumes normal distribution)
+
+
+# JMH version: 1.21
+# VM version: JDK 1.8.0_161, Java HotSpot(TM) 64-Bit Server VM, 25.161-b12
+# VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_161.jdk/Contents/Home/jre/bin/java
+# VM options: <none>
+# Warmup: 10 iterations, 10 s each
+# Measurement: 10 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.rxJavaObservable
+# Parameters: (chunkCount = 1000, chunkSize = 1000)
+
+# Run progress: 83.33% complete, ETA 00:03:21
+# Fork: 1 of 1
+# Warmup Iteration   1: 73.203 ops/s
+# Warmup Iteration   2: 81.015 ops/s
+# Warmup Iteration   3: 78.382 ops/s
+# Warmup Iteration   4: 78.175 ops/s
+# Warmup Iteration   5: 78.141 ops/s
+# Warmup Iteration   6: 78.836 ops/s
+# Warmup Iteration   7: 78.238 ops/s
+# Warmup Iteration   8: 79.595 ops/s
+# Warmup Iteration   9: 77.850 ops/s
+# Warmup Iteration  10: 78.986 ops/s
+Iteration   1: 79.896 ops/s
+Iteration   2: 79.240 ops/s
+Iteration   3: 79.033 ops/s
+Iteration   4: 78.622 ops/s
+Iteration   5: 78.450 ops/s
+Iteration   6: 79.110 ops/s
+Iteration   7: 78.243 ops/s
+Iteration   8: 78.588 ops/s
+Iteration   9: 78.263 ops/s
+Iteration  10: 78.200 ops/s
+
+
+Result "streaming.benchmarks.ChunkedEvalFilterMapSumBenchmark.rxJavaObservable":
+  78.765 ±(99.9%) 0.827 ops/s [Average]
+  (min, avg, max) = (78.200, 78.765, 79.896), stdev = 0.547
+  CI (99.9%): [77.938, 79.591] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:20:10
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                                      (chunkCount)  (chunkSize)   Mode  Cnt    Score   Error  Units
+ChunkedEvalFilterMapSumBenchmark.akkaStreams               1000         1000  thrpt   10   16.249 ± 0.114  ops/s
+ChunkedEvalFilterMapSumBenchmark.fs2Stream                 1000         1000  thrpt   10   43.392 ± 1.377  ops/s
+ChunkedEvalFilterMapSumBenchmark.monixIterant              1000         1000  thrpt   10  106.282 ± 2.616  ops/s
+ChunkedEvalFilterMapSumBenchmark.monixObservable           1000         1000  thrpt   10   89.435 ± 9.043  ops/s
+ChunkedEvalFilterMapSumBenchmark.rxJavaFlowable            1000         1000  thrpt   10   57.353 ± 1.736  ops/s
+ChunkedEvalFilterMapSumBenchmark.rxJavaObservable          1000         1000  thrpt   10   78.765 ± 0.827  ops/s
