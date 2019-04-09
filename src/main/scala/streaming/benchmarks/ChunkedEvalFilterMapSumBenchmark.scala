@@ -5,8 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Keep, Sink => AkkaSink, Source => AkkaSource}
-import cats.effect.{IO => CatsIO}
-import fs2.{Chunk => FS2Chunk, Stream => FS2Stream}
+import fs2.{Stream => FS2Stream}
 import io.reactivex.{Flowable => RxFlowable, Observable => RxObservable, Single => RxSingle}
 import monix.eval.{Task => MonixTask}
 import monix.execution.ExecutionModel.SynchronousExecution
@@ -14,12 +13,12 @@ import monix.execution.Scheduler
 import monix.execution.schedulers.TrampolineExecutionContext.immediate
 import monix.reactive.{Observable => MonixObservable}
 import monix.tail.Iterant
-import monix.tail.batches.Batch
 import org.openjdk.jmh.annotations._
+import scalaz.zio.{DefaultRuntime, ZIO}
 
 import scala.collection.immutable.IndexedSeq
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 /**
   * Benchmark designed to execute these operations:
@@ -64,8 +63,11 @@ class ChunkedEvalFilterMapSumBenchmark {
     executionModel = SynchronousExecution
   )
 
-  implicit val system = ActorSystem("benchmarks", defaultExecutionContext = Some(ec))
+  implicit val system =
+    ActorSystem("benchmarks", defaultExecutionContext = Some(ec))
   implicit val mat = ActorMaterializer()
+
+  val runtime: DefaultRuntime = new DefaultRuntime {}
 
   // All events that need to be streamed
   var allElements: IndexedSeq[Int] = _
@@ -96,7 +98,7 @@ class ChunkedEvalFilterMapSumBenchmark {
       // 2: collect buffers
       .sliding(chunkSize, chunkSize)
       // 3: async processing
-      .mapAsync(1)(seq => Future(seq.sum)(immediate))
+      .mapAsync(  1)(seq => Future(seq.sum)(immediate))
       // 3: filter
       .filter(_ > 0)
       // 4: map
@@ -111,7 +113,7 @@ class ChunkedEvalFilterMapSumBenchmark {
   def fs2Stream = {
     val stream = FS2Stream
       // 1: iteration
-      .apply(allElements:_*)
+      .apply(allElements: _*)
       // 2: collect buffers
       .chunkN(chunkSize)
       // 3: eval map
@@ -128,9 +130,27 @@ class ChunkedEvalFilterMapSumBenchmark {
   }
 
   @Benchmark
+  def zioStream = {
+    val stream = scalaz.zio.stream.ZStream
+      // 1: iteration
+      .fromIterable(allElements.grouped(chunkSize).toIterable)
+      // 2: collect buffers
+      // 3: eval map
+      .mapM(chunk => ZIO(chunk.sum))
+      // 4: filter
+      .filter(_ > 0)
+      // 5: map
+      .map(_.toLong)
+      // 6: foldLeft
+      .foldLeft(0L)(_ + _)
+
+    testResult(runtime.unsafeRun(stream))
+  }
+
+  @Benchmark
   def monixIterant: Long = {
     val stream = Iterant[MonixTask]
-      // 1: iteration
+    // 1: iteration
       .fromSeq(allElements)
       // 2: collect buffers
       .bufferTumbling(chunkSize)
@@ -171,7 +191,7 @@ class ChunkedEvalFilterMapSumBenchmark {
     import scala.collection.JavaConverters._
     // N.B. chunks aren't needed for Rx's Flowable ;-)
     val stream: RxSingle[Long] = RxFlowable
-      // 1: iteration
+    // 1: iteration
       .fromIterable(allElements.asJava)
       // 2: collect buffers
       .buffer(chunkSize)
@@ -192,7 +212,7 @@ class ChunkedEvalFilterMapSumBenchmark {
     import scala.collection.JavaConverters._
     // N.B. chunks aren't needed for Rx's Observable ;-)
     val stream: RxSingle[Long] = RxObservable
-      // 1: iteration
+    // 1: iteration
       .fromIterable(allElements.asJava)
       // 2: collect buffers
       .buffer(chunkSize)
