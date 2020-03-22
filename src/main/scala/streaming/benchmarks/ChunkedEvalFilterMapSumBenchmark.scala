@@ -181,6 +181,51 @@ class ChunkedEvalFilterMapSumBenchmark {
   }
 
   @Benchmark
+  def fs2StreamZioUntraced = {
+    import zio.interop.catz._
+
+    val stream = FS2Stream
+    // 1: iteration
+      .apply(allElements: _*)
+      // 2: collect buffers
+      .chunkN(chunkSize)
+      // 3: eval map
+      .evalMap[Task, Int](chunk => Task(chunk.foldLeft(0)(_ + _)))
+      // 4: filter
+      .filter(_ > 0)
+      // 5: map
+      .map(_.toLong)
+      .compile
+      // 6: foldLeft
+      .fold(0L)(_ + _)
+      .untraced
+
+    testResult(zioRuntime.unsafeRun(stream))
+  }
+
+  @Benchmark
+  def zioStreamUntraced = {
+    val stream = ZStream
+    // 1: iteration
+      .fromIterable(allElements)
+      // 2: collect buffers
+      .chunkN(chunkSize)
+      .chunks
+      // 3: eval map
+      .mapM(chunk => UIO(chunk.fold(0)(_ + _)))
+      // 4: filter
+      .filter(_ > 0)
+      // 5: map
+      .map(_.toLong)
+      // 6: foldLeft
+      .fold(0L)(_ + _)
+      .untraced
+
+    testResult(zioRuntime.unsafeRun(stream))
+  }
+
+
+  @Benchmark
   def monixIterant: Long = {
     val stream = Iterant[MonixTask]
     // 1: iteration
