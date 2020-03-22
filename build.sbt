@@ -5,7 +5,7 @@ scalaVersion := "2.12.11"
 
 libraryDependencies ++= Seq(
   "io.monix" %% "monix" % "3.1.0",
-  "com.typesafe.akka" %% "akka-stream" % "2.6.4",
+  "com.typesafe.akka" %% "akka-stream" % "2.5.19",
   "co.fs2" %% "fs2-core" % "2.3.0",
   "org.typelevel" %% "cats-effect" % "2.1.2",
   "io.reactivex.rxjava2" % "rxjava" % "2.2.19",
