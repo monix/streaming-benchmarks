@@ -5,21 +5,29 @@ import java.util.concurrent.TimeUnit
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Keep, Sink => AkkaSink, Source => AkkaSource}
-import cats.effect.{IO => CatsIO}
-import fs2.{Chunk => FS2Chunk, Stream => FS2Stream}
-import io.reactivex.{Flowable => RxFlowable, Observable => RxObservable, Single => RxSingle}
+import fs2.{Stream => FS2Stream}
+import io.reactivex.{
+  Flowable => RxFlowable,
+  Observable => RxObservable,
+  Single => RxSingle
+}
 import monix.eval.{Task => MonixTask}
 import monix.execution.ExecutionModel.SynchronousExecution
 import monix.execution.Scheduler
 import monix.execution.schedulers.TrampolineExecutionContext.immediate
 import monix.reactive.{Observable => MonixObservable}
 import monix.tail.Iterant
-import monix.tail.batches.Batch
 import org.openjdk.jmh.annotations._
 
+import zio.Runtime
+
 import scala.collection.immutable.IndexedSeq
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+import zio.stream.ZStream
+import zio.UIO
+import zio.Chunk
+import zio.Task
 
 /**
   * Benchmark designed to execute these operations:
@@ -64,8 +72,11 @@ class ChunkedEvalFilterMapSumBenchmark {
     executionModel = SynchronousExecution
   )
 
-  implicit val system = ActorSystem("benchmarks", defaultExecutionContext = Some(ec))
+  implicit val system =
+    ActorSystem("benchmarks", defaultExecutionContext = Some(ec))
   implicit val mat = ActorMaterializer()
+
+  val zioRuntime = Runtime.default
 
   // All events that need to be streamed
   var allElements: IndexedSeq[Int] = _
@@ -91,7 +102,7 @@ class ChunkedEvalFilterMapSumBenchmark {
   def akkaStreams = {
     // N.B. Akka Streams don't do chunks
     val program = AkkaSource
-      // 1: iteration
+    // 1: iteration
       .fromIterator(() => allElements.iterator)
       // 2: collect buffers
       .sliding(chunkSize, chunkSize)
@@ -110,8 +121,8 @@ class ChunkedEvalFilterMapSumBenchmark {
   @Benchmark
   def fs2Stream = {
     val stream = FS2Stream
-      // 1: iteration
-      .apply(allElements:_*)
+    // 1: iteration
+      .apply(allElements: _*)
       // 2: collect buffers
       .chunkN(chunkSize)
       // 3: eval map
@@ -128,9 +139,96 @@ class ChunkedEvalFilterMapSumBenchmark {
   }
 
   @Benchmark
+  def fs2StreamZio = {
+    import zio.interop.catz._
+
+    val stream = FS2Stream
+    // 1: iteration
+      .apply(allElements: _*)
+      // 2: collect buffers
+      .chunkN(chunkSize)
+      // 3: eval map
+      .evalMap[Task, Int](chunk => Task(chunk.foldLeft(0)(_ + _)))
+      // 4: filter
+      .filter(_ > 0)
+      // 5: map
+      .map(_.toLong)
+      .compile
+      // 6: foldLeft
+      .fold(0L)(_ + _)
+
+    testResult(zioRuntime.unsafeRun(stream))
+  }
+
+  @Benchmark
+  def zioStream = {
+    val stream = ZStream
+    // 1: iteration
+      .fromIterable(allElements)
+      // 2: collect buffers
+      .chunkN(chunkSize)
+      .chunks
+      // 3: eval map
+      .mapM(chunk => UIO(chunk.fold(0)(_ + _)))
+      // 4: filter
+      .filter(_ > 0)
+      // 5: map
+      .map(_.toLong)
+      // 6: foldLeft
+      .fold(0L)(_ + _)
+
+    testResult(zioRuntime.unsafeRun(stream))
+  }
+
+  @Benchmark
+  def fs2StreamZioUntraced = {
+    import zio.interop.catz._
+
+    val stream = FS2Stream
+    // 1: iteration
+      .apply(allElements: _*)
+      // 2: collect buffers
+      .chunkN(chunkSize)
+      // 3: eval map
+      .evalMap[Task, Int](chunk => Task(chunk.foldLeft(0)(_ + _)))
+      // 4: filter
+      .filter(_ > 0)
+      // 5: map
+      .map(_.toLong)
+      .compile
+      // 6: foldLeft
+      .fold(0L)(_ + _)
+      .untraced
+
+    testResult(zioRuntime.unsafeRun(stream))
+  }
+
+  @Benchmark
+  def zioStreamUntraced = {
+    val stream = ZStream
+    // 1: iteration
+      .fromIterable(allElements)
+      // 2: collect buffers
+      .chunkN(chunkSize)
+      .chunks
+      // 3: eval map
+      .mapM(chunk => UIO(chunk.fold(0)(_ + _)))
+      // 4: filter
+      .filter(_ > 0)
+      // 5: map
+      .map(_.toLong)
+      // 6: foldLeft
+      .fold(0L)(_ + _)
+      .untraced
+
+    testResult(zioRuntime.unsafeRun(stream))
+  }
+
+
+  @Benchmark
   def monixIterant: Long = {
     val stream = Iterant[MonixTask]
-      // 1: iteration
+    // 1: iteration
       .fromSeq(allElements)
       // 2: collect buffers
       .bufferTumbling(chunkSize)
@@ -150,7 +248,7 @@ class ChunkedEvalFilterMapSumBenchmark {
   def monixObservable: Long = {
     // N.B. chunks aren't needed for Monix's Observable ;-)
     val stream = MonixObservable
-      // 1: iteration
+    // 1: iteration
       .fromIterable(allElements)
       // 2: collect buffers
       .bufferTumbling(chunkSize)
@@ -171,7 +269,7 @@ class ChunkedEvalFilterMapSumBenchmark {
     import scala.collection.JavaConverters._
     // N.B. chunks aren't needed for Rx's Flowable ;-)
     val stream: RxSingle[Long] = RxFlowable
-      // 1: iteration
+    // 1: iteration
       .fromIterable(allElements.asJava)
       // 2: collect buffers
       .buffer(chunkSize)
@@ -192,7 +290,7 @@ class ChunkedEvalFilterMapSumBenchmark {
     import scala.collection.JavaConverters._
     // N.B. chunks aren't needed for Rx's Observable ;-)
     val stream: RxSingle[Long] = RxObservable
-      // 1: iteration
+    // 1: iteration
       .fromIterable(allElements.asJava)
       // 2: collect buffers
       .buffer(chunkSize)
